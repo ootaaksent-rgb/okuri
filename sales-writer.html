@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>億売り人 セールスライティング</title>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#c9a84c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="億売り人">
+<link rel="apple-touch-icon" href="./icon-192.svg">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;500&display=swap');
+
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --dark: #0d0d0d;
+    --dark2: #1a1a1a;
+    --dark3: #252525;
+    --text: #e8e0d0;
+    --text-dim: #9a9080;
+    --accent: #8b1a1a;
+    --blue: #4a7fb5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 0%, rgba(201,168,76,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 100%, rgba(139,26,26,0.08) 0%, transparent 50%);
+  }
+
+  .header {
+    text-align: center;
+    padding: 40px 24px 28px;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+  .header-label {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(20px, 5vw, 32px);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.4;
+  }
+  .header p { margin-top: 8px; font-size: 12px; color: var(--text-dim); letter-spacing: 0.05em; }
+
+  .container { max-width: 780px; margin: 0 auto; padding: 28px 18px 60px; }
+
+  /* STEP INDICATOR */
+  .step-indicator {
+    display: flex;
+    margin-bottom: 28px;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .step-dot {
+    flex: 1;
+    text-align: center;
+    padding: 9px 2px;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    border-right: 1px solid rgba(201,168,76,0.15);
+    transition: all 0.3s;
+  }
+  .step-dot:last-child { border-right: none; }
+  .step-dot.active { background: rgba(201,168,76,0.1); color: var(--gold); }
+  .step-dot.done { background: rgba(201,168,76,0.05); color: rgba(201,168,76,0.4); }
+
+  /* CARDS */
+  .card {
+    background: var(--dark2);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 8px;
+    padding: 24px 20px;
+    margin-bottom: 16px;
+    display: none;
+    animation: fadeUp 0.35s ease;
+  }
+  .card.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 5px;
+    letter-spacing: 0.05em;
+  }
+  .card-desc { font-size: 12px; color: var(--text-dim); line-height: 1.7; margin-bottom: 18px; }
+
+  /* SELECTION GRIDS */
+  .select-grid {
+    display: grid;
+    gap: 10px;
+  }
+  .select-grid.cols2 { grid-template-columns: 1fr 1fr; }
+  .select-grid.cols1 { grid-template-columns: 1fr; }
+
+  .sel-btn {
+    background: var(--dark3);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: all 0.22s;
+    text-align: left;
+  }
+  .sel-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+  .sel-btn.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); }
+
+  .sel-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+  .sel-name { font-family: 'Noto Serif JP', serif; font-size: 14px; font-weight: 700; color: var(--gold-light); margin-bottom: 6px; }
+  .sel-desc { font-size: 11px; color: var(--text-dim); line-height: 1.7; }
+
+  /* METHOD MINI */
+  .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .method-btn {
+    background: var(--dark3);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: all 0.22s;
+    text-align: left;
+  }
+  .method-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+  .method-btn.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); }
+  .method-name { font-family: 'Noto Serif JP', serif; font-size: 14px; font-weight: 700; color: var(--gold-light); margin-bottom: 7px; }
+  .method-steps { font-size: 11px; color: var(--text-dim); line-height: 1.8; }
+
+  /* FILE UPLOAD */
+  .upload-area {
+    border: 1.5px dashed rgba(201,168,76,0.3);
+    border-radius: 6px;
+    padding: 28px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.22s;
+  }
+  .upload-area:hover, .upload-area.drag { border-color: var(--gold); background: rgba(201,168,76,0.04); }
+  .upload-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+  .upload-area p { font-size: 13px; color: var(--text-dim); }
+  .upload-area strong { color: var(--text); font-weight: 400; }
+  #fileInput { display: none; }
+  .file-info {
+    margin-top: 12px;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+    padding: 9px 12px;
+    font-size: 12px;
+    color: var(--gold);
+    display: none;
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--dark3);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    padding: 12px;
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.8;
+    resize: vertical;
+    transition: border-color 0.2s;
+    min-height: 130px;
+  }
+  textarea:focus { outline: none; border-color: rgba(201,168,76,0.5); }
+  textarea::placeholder { color: var(--text-dim); }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 11px 22px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+  .btn-primary { background: linear-gradient(135deg, var(--gold), #a07830); color: var(--dark); }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-ghost { background: transparent; border: 1px solid rgba(201,168,76,0.3); color: var(--gold); }
+  .btn-ghost:hover { border-color: var(--gold); background: rgba(201,168,76,0.05); }
+  .btn-blue { background: rgba(74,127,181,0.2); border: 1px solid rgba(74,127,181,0.4); color: #7aaee0; }
+  .btn-blue:hover { background: rgba(74,127,181,0.3); }
+  .btn-green { background: rgba(60,150,80,0.2); border: 1px solid rgba(60,150,80,0.4); color: #7acc90; }
+  .btn-green:hover { background: rgba(60,150,80,0.3); }
+  .btn-row { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; align-items: center; }
+  .btn-sm { padding: 6px 13px; font-size: 11px; border-radius: 3px; }
+
+  /* OUTPUT */
+  .step-output { border: 1px solid rgba(201,168,76,0.12); border-radius: 6px; margin-bottom: 10px; overflow: hidden; }
+  .step-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 14px;
+    background: rgba(201,168,76,0.06);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    cursor: pointer;
+  }
+  .step-header-left { display: flex; align-items: center; gap: 9px; }
+  .step-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--dark);
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-label { font-size: 13px; font-weight: 500; color: var(--text); }
+  .step-body { padding: 14px; }
+  .step-text { font-size: 13px; line-height: 1.9; color: var(--text); white-space: pre-wrap; min-height: 50px; }
+  .step-edit { display: none; }
+  .step-edit textarea { min-height: 110px; }
+  .step-actions { display: flex; gap: 7px; margin-top: 9px; }
+
+  /* LOADING */
+  .loading { display: none; text-align: center; padding: 28px; }
+  .loading.active { display: block; }
+  .spinner {
+    width: 32px; height: 32px;
+    border: 2px solid rgba(201,168,76,0.2);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading p { font-size: 13px; color: var(--text-dim); }
+
+  /* SAVE */
+  .format-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .format-btn {
+    background: var(--dark3);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 6px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.22s;
+    text-align: center;
+  }
+  .format-btn:hover { border-color: var(--gold); }
+  .format-btn.selected { border-color: var(--gold); background: rgba(201,168,76,0.1); }
+  .format-icon { font-size: 24px; display: block; margin-bottom: 6px; }
+  .format-name { font-size: 13px; color: var(--text); font-weight: 500; }
+  .format-desc { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+
+  .save-list { display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto; margin-top: 12px; }
+  .save-item {
+    background: var(--dark2);
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 4px;
+    padding: 11px 13px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .save-item-info { flex: 1; min-width: 0; }
+  .save-item-name { font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .save-item-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .save-item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-size: 10px;
+    background: rgba(201,168,76,0.15);
+    color: var(--gold);
+    margin-bottom: 3px;
+    margin-right: 3px;
+  }
+  .tag.blue { background: rgba(74,127,181,0.15); color: #7aaee0; }
+
+  .alert {
+    padding: 9px 13px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin: 12px 0;
+    border-left: 3px solid var(--gold);
+    background: rgba(201,168,76,0.07);
+    color: var(--text-dim);
+    display: none;
+  }
+  .alert.show { display: block; }
+  .alert.error { border-left-color: #c05050; background: rgba(192,80,80,0.07); color: #e08080; }
+
+  input[type=text] {
+    background: var(--dark3);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+    padding: 10px 13px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    width: 100%;
+  }
+  input[type=text]:focus { outline: none; border-color: rgba(201,168,76,0.5); }
+
+  .divider { border: none; border-top: 1px solid rgba(201,168,76,0.1); margin: 16px 0; }
+  .section-label { font-size: 11px; color: var(--text-dim); letter-spacing: 0.1em; margin-bottom: 10px; }
+
+  @media (max-width: 480px) {
+    .select-grid.cols2, .method-grid, .format-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Sales Letter Generator</div>
+  <h1>億売り人<br>セールスライティング</h1>
+  <p>書籍のメソッドに沿って、あなたの文章を最高のセールスコピーへ</p>
+</div>
+
+<div class="container">
+
+  <div class="step-indicator">
+    <div class="step-dot active" id="dot1">①目的</div>
+    <div class="step-dot" id="dot2">②手法</div>
+    <div class="step-dot" id="dot3">③資料</div>
+    <div class="step-dot" id="dot4">④生成・編集</div>
+    <div class="step-dot" id="dot5">⑤保存</div>
+  </div>
+
+  <!-- STEP 1: 目的選択 -->
+  <div class="card active" id="card1">
+    <div class="card-title">STEP 1　目的を選ぶ</div>
+    <div class="card-desc">今回作成するセールスコピーの目的を選んでください。AIがその目的に合わせた文章を生成します。</div>
+
+    <div class="select-grid cols1">
+      <div class="sel-btn" id="goal-voice" onclick="selectGoal('voice')">
+        <span class="sel-icon">🎙️</span>
+        <div class="sel-name">声優・ナレーターとしての仕事獲得</div>
+        <div class="sel-desc">クライアントや制作会社へのアプローチ、仕事依頼を増やすためのセールスレター・自己PR文</div>
+      </div>
+      <div class="sel-btn" id="goal-profile" onclick="selectGoal('profile')">
+        <span class="sel-icon">🎬</span>
+        <div class="sel-name">タレントプロフィール作成</div>
+        <div class="sel-desc">オーディオブック・テレビ番組・ゲームなどの仕事を取るための魅力的なプロフィール・ポートフォリオ文</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btn-next1" onclick="goToStep(2)" disabled>次へ →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: 手法選択 -->
+  <div class="card" id="card2">
+    <div class="card-title">STEP 2　構成手法を選ぶ</div>
+    <div class="card-desc">2つの基本手法から、今回使用するものを選んでください。</div>
+
+    <div class="method-grid">
+      <div class="method-btn" id="btn-pesona" onclick="selectMethod('pesona')">
+        <div class="method-name">PESONAの法則</div>
+        <div class="method-steps">
+          P — 問題提起<br>
+          E — 共感・共鳴<br>
+          S — 解決策の提示<br>
+          O — 具体的な提案<br>
+          N — 絞り込み・限定<br>
+          A — 行動喚起
+        </div>
+      </div>
+      <div class="method-btn" id="btn-3p" onclick="selectMethod('3p')">
+        <div class="method-name">3Pの法則</div>
+        <div class="method-steps">
+          Promise — 約束<br>
+          Picture — 想像・描写<br>
+          Proof — 証明<br>
+          <br>
+          ＋ 5ステップ構成<br>
+          で展開します
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost btn-sm" onclick="goToStep(1)">← 戻る</button>
+      <button class="btn btn-primary" id="btn-next2" onclick="goToStep(3)" disabled>次へ →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: 資料入力 -->
+  <div class="card" id="card3">
+    <div class="card-title">STEP 3　元となる資料を入力する</div>
+    <div class="card-desc">セールスコピーにまとめたい情報を入力してください。入力された情報のみをもとに生成します（ない情報の追加・創作は行いません）。</div>
+
+    <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()" ondragover="handleDrag(event,true)" ondragleave="handleDrag(event,false)" ondrop="handleDrop(event)">
+      <span class="upload-icon">📄</span>
+      <p><strong>ファイルをタップして選択</strong>またはドロップ</p>
+      <p style="margin-top:5px;font-size:11px;">TXT対応（Word・PDFの場合は内容をコピーして下のテキストエリアに貼り付けてください）</p>
+      <input type="file" id="fileInput" accept=".txt" onchange="handleFile(event)">
+    </div>
+    <div class="file-info" id="fileInfo"></div>
+
+    <div style="text-align:center;margin:12px 0;font-size:12px;color:var(--text-dim);">または テキストで直接入力・貼り付け</div>
+
+    <textarea id="sourceText" placeholder="経歴・実績・スキル・受賞歴・代表作品・強みなど、コピーの元になる情報をここに入力してください。&#10;&#10;ない情報は生成しませんので、できるだけ詳しく入力してください。"></textarea>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost btn-sm" onclick="goToStep(2)">← 戻る</button>
+      <button class="btn btn-primary" id="btn-generate" onclick="generateCopy()">セールスコピーを生成する ✦</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: 生成・編集 -->
+  <div class="card" id="card4">
+    <div class="card-title">STEP 4　生成・編集</div>
+    <div class="card-desc">5ステップ構成でセールスコピーを生成しました。各セクションをタップして個別に編集できます。</div>
+
+    <div class="loading" id="loadingArea">
+      <div class="spinner"></div>
+      <p>セールスコピーを生成中…</p>
+    </div>
+
+    <div class="alert error" id="errorAlert"></div>
+
+    <div id="outputSection"></div>
+
+    <div class="btn-row" id="step4Actions" style="display:none;">
+      <button class="btn btn-ghost btn-sm" onclick="goToStep(3)">← 資料を変更</button>
+      <button class="btn btn-primary" onclick="goToStep(5)">保存・ダウンロード →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: 保存・ダウンロード -->
+  <div class="card" id="card5">
+    <div class="card-title">STEP 5　保存・ダウンロード</div>
+    <div class="card-desc">ファイル名をつけて、保存形式を選んでダウンロードしてください。ダウンロード後はタブレットの「ファイル」アプリで好きな場所に移動できます。</div>
+
+    <div class="section-label">ファイル名</div>
+    <input type="text" id="saveName" placeholder="例：声優プロフィール_〇〇さん_v1">
+
+    <hr class="divider">
+
+    <div class="section-label" style="margin-top:4px;">保存形式を選ぶ</div>
+    <div class="format-grid">
+      <div class="format-btn" id="fmt-word" onclick="selectFormat('word')">
+        <span class="format-icon">📝</span>
+        <div class="format-name">Word (.docx)</div>
+        <div class="format-desc">見出し付き・編集しやすい</div>
+      </div>
+      <div class="format-btn" id="fmt-txt" onclick="selectFormat('txt')">
+        <span class="format-icon">📄</span>
+        <div class="format-name">テキスト (.txt)</div>
+        <div class="format-desc">どこでも開ける・シンプル</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btn-download" onclick="downloadFile()" disabled>ダウンロード ↓</button>
+    </div>
+
+    <div class="alert" id="saveAlert"></div>
+
+    <hr class="divider">
+
+    <div class="section-label">履歴（このセッション内）</div>
+    <div class="save-list" id="saveList"></div>
+
+    <div class="btn-row" style="margin-top:20px;">
+      <button class="btn btn-ghost btn-sm" onclick="goToStep(4)">← 編集に戻る</button>
+      <button class="btn btn-primary" onclick="startNew()">新規作成 ✦</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let selectedGoal = null;
+let selectedMethod = null;
+let selectedFormat = null;
+let generatedSteps = {};
+let sessionHistory = [];
+
+const GOAL_LABELS = {
+  voice: '声優・ナレーター仕事獲得',
+  profile: 'タレントプロフィール'
+};
+
+const STEPS_DEF = [
+  { num: 1, label: 'ヘッドライン', key: 'headline' },
+  { num: 2, label: 'オープニング', key: 'opening' },
+  { num: 3, label: 'ボディコピー', key: 'body' },
+  { num: 4, label: 'オファー', key: 'offer' },
+  { num: 5, label: 'クロージング', key: 'closing' },
+];
+
+function selectGoal(g) {
+  selectedGoal = g;
+  document.getElementById('goal-voice').classList.toggle('selected', g === 'voice');
+  document.getElementById('goal-profile').classList.toggle('selected', g === 'profile');
+  document.getElementById('btn-next1').disabled = false;
+}
+
+function selectMethod(m) {
+  selectedMethod = m;
+  document.getElementById('btn-pesona').classList.toggle('selected', m === 'pesona');
+  document.getElementById('btn-3p').classList.toggle('selected', m === '3p');
+  document.getElementById('btn-next2').disabled = false;
+}
+
+function selectFormat(f) {
+  selectedFormat = f;
+  document.getElementById('fmt-word').classList.toggle('selected', f === 'word');
+  document.getElementById('fmt-txt').classList.toggle('selected', f === 'txt');
+  document.getElementById('btn-download').disabled = false;
+}
+
+function goToStep(n) {
+  [1,2,3,4,5].forEach(i => {
+    document.getElementById('card'+i).classList.toggle('active', i === n);
+    const dot = document.getElementById('dot'+i);
+    dot.classList.remove('active','done');
+    if (i < n) dot.classList.add('done');
+    if (i === n) dot.classList.add('active');
+  });
+  window.scrollTo(0, 0);
+}
+
+function handleDrag(e, over) {
+  e.preventDefault();
+  document.getElementById('uploadArea').classList.toggle('drag', over);
+}
+function handleDrop(e) {
+  e.preventDefault();
+  handleDrag(e, false);
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+}
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (file) processFile(file);
+}
+function processFile(file) {
+  const info = document.getElementById('fileInfo');
+  info.style.display = 'block';
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    document.getElementById('sourceText').value = e.target.result;
+    info.textContent = '📎 ' + file.name + '（' + (file.size/1024).toFixed(1) + 'KB）を読み込みました';
+  };
+  reader.onerror = () => { info.textContent = '読み込みエラー。テキストエリアに直接貼り付けてください。'; };
+  reader.readAsText(file, 'UTF-8');
+}
+
+async function generateCopy() {
+  const source = document.getElementById('sourceText').value.trim();
+  if (!source) { alert('資料を入力してください'); return; }
+
+  goToStep(4);
+  document.getElementById('loadingArea').classList.add('active');
+  document.getElementById('outputSection').innerHTML = '';
+  document.getElementById('step4Actions').style.display = 'none';
+  document.getElementById('errorAlert').classList.remove('show');
+
+  const goalDesc = selectedGoal === 'voice'
+    ? '声優・ナレーターとしてクライアントや制作会社からの仕事を増やすためのセールスレター・自己PR文'
+    : 'オーディオブック・テレビ番組・ゲームなどの仕事を取るためのタレントプロフィール・ポートフォリオ文';
+
+  const methodDesc = selectedMethod === 'pesona'
+    ? 'PESONAの法則（P:問題提起 → E:共感 → S:解決策提示 → O:具体的提案 → N:絞り込み → A:行動喚起）'
+    : '3Pの法則（Promise:約束 → Picture:想像・描写 → Proof:証明）';
+
+  const prompt = `あなたはセールスライティングの専門家です。
+以下の【元資料】に書かれた情報のみを使って、5ステップのセールスコピーを作成してください。
+
+【目的】${goalDesc}
+
+【使用する手法】${methodDesc}
+
+【絶対に守るべき制約】
+- 元資料に書かれていない情報・数字・実績・お客様の声などは一切追加しないこと
+- 推測・創作・誇張は厳禁。資料にある事実のみで構成すること
+- 情報が不足しているセクションは「※この部分は追加情報が必要です」と明記すること
+
+【5ステップ構成】
+1. ヘッドライン：読者を引き込む最初のコピー（目的に合わせた表現で）
+2. オープニング：物語・問題提起・実績で本文へ引き込む導入
+3. ボディコピー：解決策・証拠・ベネフィットの提示（スキル・実績・強みを具体的に）
+4. オファー：提供できること・条件・特長の提示
+5. クロージング：Q&A・行動喚起(CTA)・追伸(P.S.)
+
+【元資料】
+${source}
+
+【出力形式】必ず以下のJSONのみを返すこと（前置き・説明文・マークダウン記号不要）:
+{"headline":"...","opening":"...","body":"...","offer":"...","closing":"..."}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || 'APIエラー');
+
+    const raw = data.content.map(c => c.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(clean);
+    } catch(e) {
+      const match = clean.match(/\{[\s\S]*\}/);
+      if (match) parsed = JSON.parse(match[0]);
+      else throw new Error('レスポンスの解析に失敗しました');
+    }
+
+    generatedSteps = parsed;
+    renderOutput(parsed);
+  } catch (err) {
+    const el = document.getElementById('errorAlert');
+    el.textContent = 'エラーが発生しました：' + err.message + '\n\nしばらく待ってから再度お試しください。';
+    el.classList.add('show');
+  } finally {
+    document.getElementById('loadingArea').classList.remove('active');
+  }
+}
+
+function renderOutput(data) {
+  const section = document.getElementById('outputSection');
+  section.innerHTML = '';
+  STEPS_DEF.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'step-output';
+    div.innerHTML = `
+      <div class="step-header" onclick="toggleEdit('${s.key}')">
+        <div class="step-header-left">
+          <div class="step-num">${s.num}</div>
+          <div class="step-label">${s.label}</div>
+        </div>
+        <span style="font-size:11px;color:var(--text-dim)">タップで編集</span>
+      </div>
+      <div class="step-body">
+        <div class="step-text" id="text-${s.key}">${(data[s.key]||'').replace(/</g,'&lt;')}</div>
+        <div class="step-edit" id="edit-${s.key}">
+          <textarea id="ta-${s.key}"></textarea>
+          <div class="step-actions">
+            <button class="btn btn-primary btn-sm" onclick="saveEdit('${s.key}')">確定</button>
+            <button class="btn btn-ghost btn-sm" onclick="cancelEdit('${s.key}')">キャンセル</button>
+          </div>
+        </div>
+      </div>`;
+    section.appendChild(div);
+  });
+  document.getElementById('step4Actions').style.display = 'flex';
+}
+
+function toggleEdit(key) {
+  const textEl = document.getElementById('text-'+key);
+  const editEl = document.getElementById('edit-'+key);
+  const isEditing = editEl.style.display === 'block';
+  textEl.style.display = isEditing ? 'block' : 'none';
+  editEl.style.display = isEditing ? 'none' : 'block';
+  if (!isEditing) document.getElementById('ta-'+key).value = generatedSteps[key] || '';
+}
+function saveEdit(key) {
+  const val = document.getElementById('ta-'+key).value;
+  generatedSteps[key] = val;
+  document.getElementById('text-'+key).textContent = val;
+  toggleEdit(key);
+}
+function cancelEdit(key) { toggleEdit(key); }
+
+// --- DOWNLOAD ---
+function getFullText() {
+  const goalLabel = GOAL_LABELS[selectedGoal] || '';
+  const methodLabel = selectedMethod === 'pesona' ? 'PESONAの法則' : '3Pの法則';
+  const labels = { headline:'【ステップ1　ヘッドライン】', opening:'【ステップ2　オープニング】', body:'【ステップ3　ボディコピー】', offer:'【ステップ4　オファー】', closing:'【ステップ5　クロージング】' };
+  let text = '■ 目的：' + goalLabel + '\n■ 手法：' + methodLabel + '\n\n';
+  STEPS_DEF.forEach(s => {
+    text += labels[s.key] + '\n' + (generatedSteps[s.key] || '') + '\n\n';
+  });
+  return text.trim();
+}
+
+function downloadTxt(filename) {
+  const text = getFullText();
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename + '.txt';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+async function downloadDocx(filename) {
+  if (typeof JSZip === 'undefined') throw new Error('ZIPライブラリが読み込まれていません。ページを再読み込みしてください。');
+
+  const goalLabel = GOAL_LABELS[selectedGoal] || '';
+  const methodLabel = selectedMethod === 'pesona' ? 'PESONAの法則' : '3Pの法則';
+  const stepTitles = {
+    headline:'ステップ1　ヘッドライン',
+    opening:'ステップ2　オープニング',
+    body:'ステップ3　ボディコピー',
+    offer:'ステップ4　オファー',
+    closing:'ステップ5　クロージング'
+  };
+
+  function esc(s) {
+    return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function para(text, bold, sz, color, centerAlign, spaceBefore, spaceAfter) {
+    const jc = centerAlign ? '<w:jc w:val="center"/>' : '';
+    const spc = '<w:spacing w:before="'+(spaceBefore||0)+'" w:after="'+(spaceAfter||160)+'"/>';
+    const rpr = '<w:rPr>'+(bold?'<w:b/>':'')+'<w:sz w:val="'+(sz||22)+'"/>'+(color?'<w:color w:val="'+color+'"/>':'')+'</w:rPr>';
+    return (text||' ').split('\n').map(line =>
+      '<w:p><w:pPr>'+jc+spc+'</w:pPr><w:r>'+rpr+'<w:t xml:space="preserve">'+esc(line||' ')+'</w:t></w:r></w:p>'
+    ).join('');
+  }
+
+  let body = '';
+  body += para('億売り人　セールスライティング', true, 36, null, true, 0, 240);
+  body += para('目的：'+goalLabel+'　／　手法：'+methodLabel, false, 18, '888888', true, 0, 400);
+  body += para('', false, 22, null, false, 0, 200);
+
+  STEPS_DEF.forEach(s => {
+    body += para(stepTitles[s.key], true, 26, 'A07030', false, 300, 160);
+    body += para((generatedSteps[s.key]||'（内容なし）').trim(), false, 22, null, false, 0, 200);
+    body += para('', false, 22, null, false, 0, 200);
+  });
+
+  const docXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr></w:body></w:document>`;
+
+  const zip = new JSZip();
+  zip.file('[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>`);
+  zip.file('_rels/.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
+  zip.file('word/document.xml', docXml);
+  zip.file('word/_rels/document.xml.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>`);
+
+  const blob = await zip.generateAsync({type:'blob', mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename + '.docx';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  return 'docx';
+}
+
+async function downloadFile() {
+  const name = document.getElementById('saveName').value.trim() || 'セールスコピー';
+  const alertEl = document.getElementById('saveAlert');
+
+  // 同名の履歴があれば上書き確認
+  const existing = sessionHistory.find(i => i.name === name);
+  if (existing) {
+    const ok = confirm('「' + name + '」はすでに保存されています。上書きしますか？');
+    if (!ok) return;
+    // 既存を削除
+    sessionHistory = sessionHistory.filter(i => i.name !== name);
+  }
+
+  try {
+    let ext;
+    if (selectedFormat === 'txt') {
+      downloadTxt(name);
+      ext = 'txt';
+    } else {
+      ext = await downloadDocx(name); // 'rtf'が返る
+    }
+
+    sessionHistory.unshift({
+      id: Date.now(),
+      name,
+      goal: GOAL_LABELS[selectedGoal],
+      method: selectedMethod === 'pesona' ? 'PESONAの法則' : '3Pの法則',
+      format: selectedFormat === 'word' ? 'Word(RTF)' : 'TXT',
+      date: new Date().toLocaleDateString('ja-JP'),
+      steps: { ...generatedSteps }
+    });
+    renderSaveList();
+
+    const extLabel = selectedFormat === 'word' ? '.docx' : '.txt';
+    alertEl.textContent = '✓ ' + name + extLabel + ' をダウンロードしました。タブレットの「ファイル」アプリから移動できます。';
+    alertEl.className = 'alert show';
+    setTimeout(() => alertEl.classList.remove('show'), 6000);
+
+  } catch(err) {
+    alertEl.textContent = 'ダウンロードに失敗しました：' + err.message;
+    alertEl.className = 'alert error show';
+  }
+}
+
+function renderSaveList() {
+  const list = document.getElementById('saveList');
+  if (sessionHistory.length === 0) {
+    list.innerHTML = '<p style="font-size:12px;color:var(--text-dim);padding:8px 0;">まだダウンロード履歴はありません</p>';
+    return;
+  }
+  list.innerHTML = sessionHistory.map(item => `
+    <div class="save-item">
+      <div class="save-item-info">
+        <span class="tag">${item.goal}</span><span class="tag blue">${item.format}</span>
+        <div class="save-item-name">${item.name}</div>
+        <div class="save-item-meta">${item.date} · ${item.method}</div>
+      </div>
+      <div class="save-item-actions">
+        <button class="btn btn-ghost btn-sm" onclick="reloadItem(${item.id})">再編集</button>
+      </div>
+    </div>`).join('');
+}
+
+function reloadItem(id) {
+  const item = sessionHistory.find(i => i.id === id);
+  if (!item) return;
+  selectedGoal = item.goal.includes('声優') ? 'voice' : 'profile';
+  selectedMethod = item.method.includes('PESONA') ? 'pesona' : '3p';
+  generatedSteps = { ...item.steps };
+  goToStep(4);
+  document.getElementById('loadingArea').classList.remove('active');
+  renderOutput(item.steps);
+}
+
+function startNew() {
+  selectedGoal = null; selectedMethod = null; selectedFormat = null; generatedSteps = {};
+  ['goal-voice','goal-profile','btn-pesona','btn-3p','fmt-word','fmt-txt'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('selected');
+  });
+  document.getElementById('btn-next1').disabled = true;
+  document.getElementById('btn-next2').disabled = true;
+  document.getElementById('btn-download').disabled = true;
+  document.getElementById('sourceText').value = '';
+  document.getElementById('fileInfo').style.display = 'none';
+  document.getElementById('saveName').value = '';
+  goToStep(1);
+}
+
+renderSaveList();
+
+// PWA Service Worker登録
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
