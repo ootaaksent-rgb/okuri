@@ -625,7 +625,10 @@ ${source}
 【出力形式】必ず以下のJSONのみを返すこと（前置き・説明文・マークダウン記号不要）:
 {"headline":"...","opening":"...","body":"...","offer":"...","closing":"..."}`;
 
-  try {
+  async function attemptFetch(retryCount) {
+    document.querySelector('#loadingArea p').textContent =
+      retryCount === 0 ? 'セールスコピーを生成中…' : '再試行中… (' + retryCount + '/3)';
+
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -635,9 +638,23 @@ ${source}
         messages: [{ role: 'user', content: prompt }]
       })
     });
-
     const data = await res.json();
-    if (data.error) throw new Error(data.error.message || 'APIエラー');
+    if (data.error) throw new Error(JSON.stringify(data.error));
+    return data;
+  }
+
+  try {
+    let data, lastErr;
+    for (let i = 0; i <= 3; i++) {
+      try {
+        data = await attemptFetch(i);
+        break;
+      } catch(e) {
+        lastErr = e;
+        if (i < 3) await new Promise(r => setTimeout(r, 2000 * (i + 1)));
+      }
+    }
+    if (!data) throw lastErr;
 
     const raw = data.content.map(c => c.text || '').join('');
     const clean = raw.replace(/```json|```/g, '').trim();
@@ -655,7 +672,7 @@ ${source}
     renderOutput(parsed);
   } catch (err) {
     const el = document.getElementById('errorAlert');
-    el.textContent = 'エラーが発生しました：' + err.message + '\n\nしばらく待ってから再度お試しください。';
+    el.textContent = 'エラーが発生しました：' + err.message + '\n\n3回試みましたが失敗しました。インターネット接続を確認して再度お試しください。';
     el.classList.add('show');
   } finally {
     document.getElementById('loadingArea').classList.remove('active');
