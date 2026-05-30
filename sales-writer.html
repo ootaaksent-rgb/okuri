@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>億売り人 セールスライティング</title>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#c9a84c">
@@ -338,6 +338,23 @@
 
   @media (max-width: 480px) {
     .select-grid.cols2, .method-grid, .format-grid { grid-template-columns: 1fr; }
+  }
+
+  /* 横画面レイアウト */
+  @media (orientation: landscape) {
+    .header { padding: 16px 24px 12px; }
+    .header h1 { font-size: 22px; }
+    .header p { font-size: 11px; margin-top: 4px; }
+    .container { padding: 16px 20px 40px; }
+    .card { padding: 16px; }
+    .step-indicator { margin-bottom: 16px; }
+    .card-desc { margin-bottom: 12px; }
+    .select-grid.cols1 { grid-template-columns: 1fr 1fr; }
+    .sel-btn { padding: 12px; }
+    .sel-icon { font-size: 18px; margin-bottom: 4px; }
+    textarea { min-height: 90px; }
+    .upload-area { padding: 16px; }
+    .upload-icon { font-size: 20px; margin-bottom: 4px; }
   }
 </style>
 </head>
